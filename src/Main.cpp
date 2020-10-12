@@ -19,6 +19,7 @@ static int on_receive(void* socket_ptr) {
     char message[message_length];
     int received;
 
+#pragma region OLD_LOOP
     // TODO: while(), rather than do
     do {
         received = SDLNet_TCP_Recv(socket, message, message_length);
@@ -47,7 +48,26 @@ static int on_receive(void* socket_ptr) {
         }
 
     } while (received > 0 && is_running);
+#pragma endregion
 
+#pragma region NEW_LOOP
+    /*while (received > 0 && is_running) {
+        message[received] = '\0';
+        char* pch = strtok(message, ",");
+        string cmd(pch);
+        vector<string> args;
+        while (pch != NULL) {
+            pch = strtok(NULL, ",");
+            if (pch != NULL) {
+                args.push_back(string(pch));
+            }
+        }
+        game->on_receive(cmd, args);
+        if (cmd == "exit") {
+            break;
+        }
+    }*/
+#pragma endregion
     return 0;
 }
 
