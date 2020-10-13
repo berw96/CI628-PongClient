@@ -95,7 +95,7 @@ static int on_send(void* socket_ptr) {
     return 0;
 }
 
-void loop(SDL_Renderer* renderer) {
+void gameLoop(SDL_Renderer* renderer) {
     SDL_Event event;
 
     while (is_running) {
@@ -152,7 +152,7 @@ int run_game() {
         return -1;
     }
 
-    loop(renderer);
+    gameLoop(renderer);
 
     return 0;
 }

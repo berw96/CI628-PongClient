@@ -28,22 +28,29 @@ void MyGame::input(SDL_Event& event) {
         case SDLK_s:
             send(event.type == SDL_KEYDOWN ? "S_DOWN" : "S_UP");
             break;
-        /*case SDLK_a:
+        case SDLK_a:
             send(event.type == SDL_KEYDOWN ? "A_DOWN" : "A_UP");
             break;
         case SDLK_d:
             send(event.type == SDL_KEYDOWN ? "D_DOWN" : "D_UP");
-            break;*/
+            break;
+        case SDLK_SPACE:
+            send(event.type == SDL_KEYDOWN ? "SPACE_DOWN" : "SPACE_UP");
+            break;
     }
 }
 
 void MyGame::update() {
+    p1.body.x   = game_data.player1X;
+    p1.turret.x = p1.body.x + (int)(p1.body.w);
     p1.body.y   = game_data.player1Y;
     p1.turret.y = p1.body.y + (int)(p1.body.h/3);
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &p1.body);
     SDL_RenderDrawRect(renderer, &p1.turret);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderDrawRect(renderer, &p1.healthBar);
 }
