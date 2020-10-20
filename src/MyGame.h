@@ -8,12 +8,14 @@
 #include "SDL.h"
 
 static struct GameData {
-    int player1X    = 0;
-    int player2X    = 0;
-    int player1Y    = 0;
-    int player2Y    = 0;
-    int ballX       = 0;
-    int ballY       = 0;
+    int player1X        = 0;
+    int player2X        = 0;
+    int player1Y        = 0;
+    int player2Y        = 0;
+    int player1Health   = 0;
+    int player2Health   = 0;
+    int ballX           = 0;
+    int ballY           = 0;
 } game_data;
 
 struct PlayerObject {
