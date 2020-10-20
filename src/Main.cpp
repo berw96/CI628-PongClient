@@ -19,7 +19,7 @@ static int on_receive(void* socket_ptr) {
     char message[message_length];
     int received;
 
-#pragma region OLD_LOOP
+#pragma region GAME_LOOP
     do {
         received = SDLNet_TCP_Recv(socket, message, message_length);
         message[received] = '\0';

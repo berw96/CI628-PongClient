@@ -26,7 +26,7 @@ struct PlayerObject {
         30
     };
     SDL_Rect turret = {
-        body.w,
+        0,
         0,
         body.w,
         body.h / 3
@@ -46,6 +46,7 @@ class MyGame {
 
     private:
         Player p1 = Player();
+        Player p2 = Player();
 
     public:
         std::vector<std::string> messages;
