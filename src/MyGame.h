@@ -6,47 +6,21 @@
 #include <string>
 
 #include "SDL.h"
+#include "PlayerObject.h"
 
 static struct GameData {
-    int player1X        = 0;
-    int player2X        = 0;
-    int player1Y        = 0;
-    int player2Y        = 0;
-    int player1Health   = 0;
-    int player2Health   = 0;
-    int ballX           = 0;
-    int ballY           = 0;
+    int playerY    = 0;
+    int enemyY    = 0;
+    int playerX    = 0;
+    int enemyX    = 0;
+    int ballX       = 0;
+    int ballY       = 0;
 } game_data;
 
-struct PlayerObject {
-    SDL_Rect body   = {
-        0, 
-        0, 
-        30, 
-        30
-    };
-    SDL_Rect turret = {
-        0,
-        0,
-        body.w,
-        body.h / 3
-    };
-    SDL_Rect healthBar = {
-        0,
-        0,
-        50,
-        10
-    };
-    int score       = 0;
-    bool hasFired   = false;
-};
-typedef PlayerObject Player;
-
 class MyGame {
-
     private:
-        Player p1 = Player();
-        Player p2 = Player();
+        Player player = Player();
+        Player enemy = Player();
 
     public:
         std::vector<std::string> messages;
