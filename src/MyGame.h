@@ -9,12 +9,10 @@
 #include "PlayerObject.h"
 
 static struct GameData {
-    int playerY    = 0;
-    int enemyY    = 0;
-    int playerX    = 0;
-    int enemyX    = 0;
-    int ballX       = 0;
-    int ballY       = 0;
+    int playerX = 0;
+    int enemyX  = 0;
+    int ballX   = 0;
+    int ballY   = 0;
 } game_data;
 
 class MyGame {

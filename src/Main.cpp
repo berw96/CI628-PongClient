@@ -11,6 +11,7 @@ bool is_running = true;
 
 MyGame* game = new MyGame();
 
+//Processes output from the server.
 static int on_receive(void* socket_ptr) {
     TCPsocket socket = (TCPsocket)socket_ptr;
 
@@ -51,6 +52,7 @@ static int on_receive(void* socket_ptr) {
     return 0;
 }
 
+//Sends client input to the server.
 static int on_send(void* socket_ptr) {
     TCPsocket socket = (TCPsocket)socket_ptr;
 
