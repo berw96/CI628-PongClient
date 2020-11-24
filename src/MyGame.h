@@ -8,11 +8,16 @@
 #include "SDL.h"
 #include "PlayerObject.h"
 
+// Data provided by the server
 static struct GameData {
     int playerX = 0;
-    int enemyX  = 0;
-    int ballX   = 0;
-    int ballY   = 0;
+    int enemyX = 0;
+    int playerScore = 0;
+    int enemyScore = 0;
+    int playerBallX = 0;
+    int playerBallY = 0;
+    int enemyBallX = 0;
+    int enemyBallY = 0;
 } game_data;
 
 class MyGame {

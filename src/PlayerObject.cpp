@@ -7,11 +7,17 @@ Player::PlayerObject() {
         30,
         30
     };
-    turret = {
-        0,
-        0,
-        body.w,
-        body.h / 3
-    };
+
+    ball = new BallObject();
 };
 Player::~PlayerObject() {};
+
+Ball::BallObject() {
+    body = {
+        0,
+        0,
+        15,
+        15
+    };
+};
+Ball::~BallObject() {};

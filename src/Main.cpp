@@ -1,10 +1,12 @@
 #include "SDL_net.h"
-
 #include "MyGame.h"
+
+#define _DEFAULT_WINDOW_WIDTH_  (800)
+#define _DEFAULT_WINDOW_HEIGHT_ (600)
 
 using namespace std;
 
-const char* IP_NAME = "localhost";
+const char* IP_NAME = "10.8.119.179";
 const Uint16 PORT = 55555;
 
 bool is_running = true;
@@ -15,8 +17,10 @@ MyGame* game = new MyGame();
 static int on_receive(void* socket_ptr) {
     TCPsocket socket = (TCPsocket)socket_ptr;
 
+    // assumes that each message is 1kb in size.
     const int message_length = 1024;
 
+    // creates a char array which can accept a stream of bytes up to 1kb in size.
     char message[message_length];
     int received;
 
@@ -118,7 +122,7 @@ int run_game() {
     SDL_Window* window = SDL_CreateWindow(
         "Multiplayer Pong Client",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 600,
+        _DEFAULT_WINDOW_WIDTH_, _DEFAULT_WINDOW_HEIGHT_,
         SDL_WINDOW_SHOWN
     );
 

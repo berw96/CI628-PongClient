@@ -2,21 +2,17 @@
 #define _PLAYER_OBJECT_
 
 #include "SDL.h"
+class BallObject;
 
 class PlayerObject {
     friend class MyGame;
+    friend class BallObject;
 private:
-    enum Team {
-        RED, BLUE
-    };
     int score = 0;
-    int health = 2;
-    int ammo = 5;
     bool hasFired = false;
-    Team team;
     SDL_Rect body;
-    SDL_Rect turret;
-    SDL_Color color;
+    SDL_Texture* sprite;
+    BallObject* ball;
 
 public:
     PlayerObject();
@@ -25,5 +21,18 @@ public:
 };
 typedef PlayerObject Player;
 
+class BallObject {
+    friend class MyGame;
+    friend class BallObject;
+private:
+    int radius =  5;
+    bool isActive;
+    SDL_Rect body;
+
+public:
+    BallObject();
+    ~BallObject();
+};
+typedef BallObject Ball;
 
 #endif
