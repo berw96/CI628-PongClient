@@ -4,8 +4,8 @@ Player::PlayerObject() {
     body = {
         0,
         0,
-        30,
-        30
+        100,
+        100
     };
 
     ball = new BallObject();

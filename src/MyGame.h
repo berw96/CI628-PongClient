@@ -6,6 +6,7 @@
 #include <string>
 
 #include "SDL.h"
+#include "SDL_image.h"
 #include "PlayerObject.h"
 
 // Data provided by the server
@@ -24,6 +25,11 @@ class MyGame {
     private:
         Player player = Player();
         Player enemy = Player();
+        int texture_width = 100;
+        int texture_height = 100;
+        SDL_Surface* surface;
+        SDL_Texture* player_texture;
+        SDL_Texture* enemy_texture;
 
     public:
         std::vector<std::string> messages;
@@ -33,6 +39,8 @@ class MyGame {
         void input(SDL_Event& event);
         void update();
         void render(SDL_Renderer* renderer);
+        void loadResources();
+        void releaseResources();
 };
 
 #endif

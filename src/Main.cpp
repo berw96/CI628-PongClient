@@ -1,4 +1,5 @@
 #include "SDL_net.h"
+#include "SDL_image.h"
 #include "MyGame.h"
 
 #define _DEFAULT_WINDOW_WIDTH_  (800)
@@ -23,7 +24,7 @@ static int on_receive(void* socket_ptr) {
     // creates a char array which can accept a stream of bytes up to 1kb in size.
     char message[message_length];
     int received;
-
+    
 #pragma region GAME_LOOP
     do {
         received = SDLNet_TCP_Recv(socket, message, message_length);
@@ -105,7 +106,7 @@ void gameLoop(SDL_Renderer* renderer) {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
         SDL_RenderClear(renderer);
 
         game->update();
@@ -120,7 +121,7 @@ void gameLoop(SDL_Renderer* renderer) {
 
 int run_game() {
     SDL_Window* window = SDL_CreateWindow(
-        "Multiplayer Pong Client",
+        "Multiplayer Tank Battle Client",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         _DEFAULT_WINDOW_WIDTH_, _DEFAULT_WINDOW_HEIGHT_,
         SDL_WINDOW_SHOWN
@@ -137,6 +138,8 @@ int run_game() {
         std::cout << "Failed to create renderer" << SDL_GetError() << std::endl;
         return -1;
     }
+
+    game->loadResources();
 
     gameLoop(renderer);
 

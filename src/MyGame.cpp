@@ -52,13 +52,15 @@ void MyGame::input(SDL_Event& event) {
         send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
         break;
 #pragma endregion
+    case SDLK_ESCAPE:
+        exit(0);
     }
 }
 
 void MyGame::update() {
 #pragma region PLAYER
     player.body.x = game_data.playerX;
-    player.body.y = 600 - (player.body.h);
+    player.body.y = 580 - (player.body.h);
     player.ball->body.x = game_data.playerBallX;
     player.ball->body.y = game_data.playerBallY;
     player.score = game_data.playerScore;
@@ -66,15 +68,37 @@ void MyGame::update() {
 
 #pragma region ENEMY
     enemy.body.x = game_data.enemyX;
-    enemy.body.y = enemy.body.h;
+    enemy.body.y = enemy.body.h - 80;
     enemy.ball->body.x = game_data.enemyBallX;
     enemy.ball->body.y = game_data.enemyBallY;
     enemy.score = game_data.enemyScore;
 #pragma endregion
 }
 
+void MyGame::loadResources() {
+    surface = IMG_Load("res/tank.png");
+
+    if (surface != nullptr) {
+        std::cout << "Loaded surface successfully.\n";
+    }
+    else {
+        std::cout << "Could not load surface.\n";
+    }
+}
+
 void MyGame::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(renderer, &player.body);
-    SDL_RenderDrawRect(renderer, &enemy.body);
+
+    if (player_texture == nullptr) {
+        SDL_RenderDrawRect(renderer, &player.body);
+    }
+    if (enemy_texture == nullptr) {
+        SDL_RenderDrawRect(renderer, &enemy.body);
+    }
+
+    player_texture = SDL_CreateTextureFromSurface(renderer, surface);
+    enemy_texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    SDL_RenderCopyEx(renderer, player_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, enemy_texture, NULL, &enemy.body);
 }
