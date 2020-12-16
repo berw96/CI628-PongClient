@@ -7,6 +7,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include "PlayerObject.h"
 
 // Data provided by the server
@@ -27,9 +28,13 @@ class MyGame {
         Player enemy = Player();
         int texture_width = 100;
         int texture_height = 100;
-        SDL_Surface* surface;
-        SDL_Texture* player_texture;
-        SDL_Texture* enemy_texture;
+        SDL_Surface* tankSurface;
+        SDL_Surface* bulletSurface;
+        SDL_Texture* player_tank_texture;
+        SDL_Texture* enemy_tank_texture;
+        SDL_Texture* player_bullet_texture;
+        SDL_Texture* enemy_bullet_texture;
+        TTF_Font* scoreFont;
 
     public:
         std::vector<std::string> messages;

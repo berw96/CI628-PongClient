@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const char* IP_NAME = "10.8.119.179";
+const char* IP_NAME = "localhost";
 const Uint16 PORT = 55555;
 
 bool is_running = true;
@@ -180,6 +180,8 @@ int main(int argc, char** argv) {
     SDL_CreateThread(on_send, "ConnectionSendThread", (void*)socket);
 
     run_game();
+    
+    game->releaseResources();
 
     delete game;
 

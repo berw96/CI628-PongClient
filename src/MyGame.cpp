@@ -76,29 +76,53 @@ void MyGame::update() {
 }
 
 void MyGame::loadResources() {
-    surface = IMG_Load("res/tank.png");
+    tankSurface     = IMG_Load("res/images/tank.png");
+    bulletSurface   = IMG_Load("res/images/bullet.png");
+    scoreFont       = TTF_OpenFont("res/fonts/UniversCondensed.ttf", 12);
 
-    if (surface != nullptr) {
-        std::cout << "Loaded surface successfully.\n";
+    if (tankSurface != nullptr) {
+        std::cout << "Loaded tank.png successfully\n";
     }
     else {
-        std::cout << "Could not load surface.\n";
+        std::cout << "Could not load tank.png\n";
     }
+    if (bulletSurface != nullptr) {
+        std::cout << "Loaded bullet.png successfully\n";
+    }
+    else {
+        std::cout << "Could not load bullet.png\n";
+    }
+    if (scoreFont != nullptr) {
+        std::cout << "Loaded font successfully.\n";
+    } 
+    else {
+        std::cout << "Could not load font";
+    }
+}
+
+void MyGame::releaseResources() {
+    delete tankSurface;
+    delete bulletSurface;
+    delete scoreFont;
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    if (player_texture == nullptr) {
+    if (player_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &player.body);
     }
-    if (enemy_texture == nullptr) {
+    if (enemy_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &enemy.body);
     }
 
-    player_texture = SDL_CreateTextureFromSurface(renderer, surface);
-    enemy_texture = SDL_CreateTextureFromSurface(renderer, surface);
+    player_tank_texture     = SDL_CreateTextureFromSurface(renderer, tankSurface);
+    enemy_tank_texture      = SDL_CreateTextureFromSurface(renderer, tankSurface);
+    player_bullet_texture   = SDL_CreateTextureFromSurface(renderer, bulletSurface);
+    enemy_bullet_texture    = SDL_CreateTextureFromSurface(renderer, bulletSurface);
 
-    SDL_RenderCopyEx(renderer, player_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
-    SDL_RenderCopy(renderer, enemy_texture, NULL, &enemy.body);
+    SDL_RenderCopyEx(renderer, player_tank_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
+    SDL_RenderCopy(renderer, enemy_tank_texture, NULL, &enemy.body);
+
+    //bullets need to be rendered conditionally based on whether they're spawned on the server.
 }
