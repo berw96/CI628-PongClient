@@ -76,27 +76,32 @@ void MyGame::update() {
 }
 
 void MyGame::loadResources() {
+    if (TTF_Init() < 0) {
+        printf("Could not init SDL_ttf.");
+        exit(1);
+    }
+
     tankSurface     = IMG_Load("res/images/tank.png");
     bulletSurface   = IMG_Load("res/images/bullet.png");
-    scoreFont       = TTF_OpenFont("res/fonts/UniversCondensed.ttf", 12);
+    scoreFont       = TTF_OpenFont("res/fonts/UniversCondensed.ttf", 64);
 
     if (tankSurface != nullptr) {
-        std::cout << "Loaded tank.png successfully\n";
+        std::cout << "Loaded tank image successfully\n";
     }
     else {
-        std::cout << "Could not load tank.png\n";
+        std::cout << "Could not load tank image\n";
     }
     if (bulletSurface != nullptr) {
-        std::cout << "Loaded bullet.png successfully\n";
+        std::cout << "Loaded bullet image successfully\n";
     }
     else {
-        std::cout << "Could not load bullet.png\n";
+        std::cout << "Could not load bullet image\n";
     }
     if (scoreFont != nullptr) {
-        std::cout << "Loaded font successfully.\n";
+        std::cout << "Loaded font successfully\n";
     } 
     else {
-        std::cout << "Could not load font";
+        std::cout << "Could not load font\n";
     }
 }
 
@@ -104,25 +109,84 @@ void MyGame::releaseResources() {
     delete tankSurface;
     delete bulletSurface;
     delete scoreFont;
+    delete player_score_surface;
+    delete enemy_score_surface;
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
+    // Render SDL_Rects if textures cannot be loaded
     if (player_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &player.body);
     }
     if (enemy_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &enemy.body);
     }
+    if (player_bullet_texture == nullptr) {
+        SDL_RenderDrawRect(renderer, &player.ball->body);
+    }
+    if (enemy_bullet_texture == nullptr) {
+        SDL_RenderDrawRect(renderer, &enemy.ball->body);
+    }
+
+    player_score_surface = TTF_RenderText_Blended(
+        scoreFont,
+        std::to_string(game_data.playerScore).c_str(),
+        fontColor
+    );
+
+    enemy_score_surface = TTF_RenderText_Blended(
+        scoreFont,
+        std::to_string(game_data.enemyScore).c_str(),
+        fontColor
+    );
+
+    int player_score_width, player_score_height;
+    int enemy_score_width, enemy_score_height;
+
+    SDL_QueryTexture(
+        player_score_texture,
+        NULL,
+        NULL,
+        &player_score_width,
+        &player_score_height
+    );
+
+    SDL_QueryTexture(
+        enemy_score_texture,
+        NULL,
+        NULL,
+        &enemy_score_width,
+        &enemy_score_height
+    );
+
+    SDL_Rect player_score_dst = {
+        100,
+        100,
+        player_score_width,
+        player_score_height
+    };
+
+    SDL_Rect enemy_score_dst = {
+        700,
+        100,
+        enemy_score_width,
+        enemy_score_height
+    };
 
     player_tank_texture     = SDL_CreateTextureFromSurface(renderer, tankSurface);
     enemy_tank_texture      = SDL_CreateTextureFromSurface(renderer, tankSurface);
     player_bullet_texture   = SDL_CreateTextureFromSurface(renderer, bulletSurface);
     enemy_bullet_texture    = SDL_CreateTextureFromSurface(renderer, bulletSurface);
+    player_score_texture    = SDL_CreateTextureFromSurface(renderer, player_score_surface);
+    enemy_score_texture    = SDL_CreateTextureFromSurface(renderer, enemy_score_surface);
 
     SDL_RenderCopyEx(renderer, player_tank_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
     SDL_RenderCopy(renderer, enemy_tank_texture, NULL, &enemy.body);
+    SDL_RenderCopy(renderer, player_bullet_texture, NULL, &player.ball->body);
+    SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
+    SDL_RenderCopy(renderer, player_score_texture, NULL, &player_score_dst);
+    SDL_RenderCopy(renderer, enemy_score_texture, NULL, &enemy_score_dst);
 
-    //bullets need to be rendered conditionally based on whether they're spawned on the server.
 }

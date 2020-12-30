@@ -28,13 +28,21 @@ class MyGame {
         Player enemy = Player();
         int texture_width = 100;
         int texture_height = 100;
+
         SDL_Surface* tankSurface;
         SDL_Surface* bulletSurface;
+        SDL_Surface* player_score_surface;
+        SDL_Surface* enemy_score_surface;
+
         SDL_Texture* player_tank_texture;
         SDL_Texture* enemy_tank_texture;
         SDL_Texture* player_bullet_texture;
         SDL_Texture* enemy_bullet_texture;
+        SDL_Texture* player_score_texture;
+        SDL_Texture* enemy_score_texture;
+
         TTF_Font* scoreFont;
+        SDL_Color fontColor = {255, 255, 255, 255};
 
     public:
         std::vector<std::string> messages;

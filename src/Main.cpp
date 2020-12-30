@@ -181,6 +181,7 @@ int main(int argc, char** argv) {
 
     run_game();
     
+    // Release resources after game loop ends
     game->releaseResources();
 
     delete game;
