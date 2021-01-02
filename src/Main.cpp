@@ -154,10 +154,16 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
+    // Initialize SDL_ttf
+    if (TTF_Init() < 0) {
+        printf("Could not init SDL_ttf.");
+        exit(2);
+    }
+
     // Initialize SDL_net
     if (SDLNet_Init() == -1) {
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
-        exit(2);
+        exit(3);
     }
 
     IPaddress ip;
@@ -165,7 +171,7 @@ int main(int argc, char** argv) {
     // Resolve host (ip name + port) into an IPaddress type
     if (SDLNet_ResolveHost(&ip, IP_NAME, PORT) == -1) {
         printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-        exit(3);
+        exit(4);
     }
 
     // Open the connection to the server
@@ -173,7 +179,7 @@ int main(int argc, char** argv) {
 
     if (!socket) {
         printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-        exit(4);
+        exit(5);
     }
 
     SDL_CreateThread(on_receive, "ConnectionReceiveThread", (void*)socket);

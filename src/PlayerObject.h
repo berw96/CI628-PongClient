@@ -11,7 +11,6 @@ private:
     int score = 0;
     bool hasFired = false;
     SDL_Rect body;
-    SDL_Texture* sprite;
     BallObject* ball;
 
 public:

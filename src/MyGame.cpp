@@ -76,11 +76,6 @@ void MyGame::update() {
 }
 
 void MyGame::loadResources() {
-    if (TTF_Init() < 0) {
-        printf("Could not init SDL_ttf.");
-        exit(1);
-    }
-
     tankSurface     = IMG_Load("res/images/tank.png");
     bulletSurface   = IMG_Load("res/images/bullet.png");
     scoreFont       = TTF_OpenFont("res/fonts/UniversCondensed.ttf", 64);
@@ -188,5 +183,4 @@ void MyGame::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
     SDL_RenderCopy(renderer, player_score_texture, NULL, &player_score_dst);
     SDL_RenderCopy(renderer, enemy_score_texture, NULL, &enemy_score_dst);
-
 }
