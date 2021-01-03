@@ -20,6 +20,8 @@ static struct GameData {
     int playerBallY = 0;
     int enemyBallX = 0;
     int enemyBallY = 0;
+    int playerBallFlag = 0;
+    int enemyBallFlag = 0;
 } game_data;
 
 class MyGame {

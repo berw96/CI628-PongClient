@@ -4,30 +4,43 @@
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
         switch (args.size()) {
-        case 4:
-            game_data.playerX = stoi(args.at(0));
-            game_data.enemyX = stoi(args.at(1));
-            game_data.playerScore = stoi(args.at(2));
-            game_data.enemyScore = stoi(args.at(3));
-            break;
-            // this particular case has a problem - it only registers player balls, not enemy balls
         case 6:
             game_data.playerX = stoi(args.at(0));
             game_data.enemyX = stoi(args.at(1));
             game_data.playerScore = stoi(args.at(2));
             game_data.enemyScore = stoi(args.at(3));
-            game_data.playerBallX = stoi(args.at(4));
-            game_data.playerBallY = stoi(args.at(5));
+            game_data.playerBallFlag = stoi(args.at(4));
+            game_data.enemyBallFlag = stoi(args.at(5));
             break;
         case 8:
             game_data.playerX = stoi(args.at(0));
             game_data.enemyX = stoi(args.at(1));
             game_data.playerScore = stoi(args.at(2));
             game_data.enemyScore = stoi(args.at(3));
-            game_data.playerBallX = stoi(args.at(4));
-            game_data.playerBallY = stoi(args.at(5));
-            game_data.enemyBallX = stoi(args.at(6));
-            game_data.enemyBallY = stoi(args.at(7));
+            game_data.playerBallFlag = stoi(args.at(4));
+            game_data.enemyBallFlag = stoi(args.at(5));
+            // detects WHICH ball is active and sets data accordingly
+            if (game_data.playerBallFlag == 1) {
+                game_data.playerBallX = stoi(args.at(6));
+                game_data.playerBallY = stoi(args.at(7));
+            }
+            if (game_data.enemyBallFlag == 1) {
+                game_data.enemyBallX = stoi(args.at(6));
+                game_data.enemyBallY = stoi(args.at(7));
+            }
+            break;
+        case 10:
+            // case where everything is active
+            game_data.playerX = stoi(args.at(0));
+            game_data.enemyX = stoi(args.at(1));
+            game_data.playerScore = stoi(args.at(2));
+            game_data.enemyScore = stoi(args.at(3));
+            game_data.playerBallFlag = stoi(args.at(4));
+            game_data.enemyBallFlag = stoi(args.at(5));
+            game_data.playerBallX = stoi(args.at(6));
+            game_data.playerBallY = stoi(args.at(7));
+            game_data.enemyBallX = stoi(args.at(8));
+            game_data.enemyBallY = stoi(args.at(9));
             break;
         }
     } else {
