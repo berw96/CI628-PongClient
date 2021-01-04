@@ -119,6 +119,12 @@ void MyGame::releaseResources() {
     delete scoreFont;
     delete player_score_surface;
     delete enemy_score_surface;
+    delete player_score_texture;
+    delete enemy_score_texture;
+    delete player_tank_texture;
+    delete enemy_tank_texture;
+    delete player_bullet_texture;
+    delete enemy_bullet_texture;
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
