@@ -192,8 +192,11 @@ void MyGame::render(SDL_Renderer* renderer) {
 
     SDL_RenderCopyEx(renderer, player_tank_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
     SDL_RenderCopy(renderer, enemy_tank_texture, NULL, &enemy.body);
-    SDL_RenderCopy(renderer, player_bullet_texture, NULL, &player.ball->body);
-    SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
+    // balls render conditonally based on their respective flags
+    if (game_data.playerBallFlag == 1)
+        SDL_RenderCopy(renderer, player_bullet_texture, NULL, &player.ball->body);
+    if (game_data.enemyBallFlag == 1)
+        SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
     SDL_RenderCopy(renderer, player_score_texture, NULL, &player_score_dst);
     SDL_RenderCopy(renderer, enemy_score_texture, NULL, &enemy_score_dst);
 }
