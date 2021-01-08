@@ -64,26 +64,33 @@ void MyGame::input(SDL_Event& event) {
     case SDLK_w:
         send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
         break;
-#pragma endregion
     case SDLK_ESCAPE:
+        send("QUIT");
+        // delay by a few milliseconds to enable the server to receive the message before exiting
+        SDL_Delay(200);
         exit(0);
     }
+#pragma endregion
 }
 
 void MyGame::update() {
 #pragma region PLAYER
     player.body.x = game_data.playerX;
     player.body.y = 580 - (player.body.h);
-    player.ball->body.x = game_data.playerBallX;
-    player.ball->body.y = game_data.playerBallY;
+    if (game_data.playerBallFlag == 1) {
+        player.ball->body.x = game_data.playerBallX;
+        player.ball->body.y = game_data.playerBallY;
+    }
     player.score = game_data.playerScore;
 #pragma endregion
 
 #pragma region ENEMY
     enemy.body.x = game_data.enemyX;
     enemy.body.y = enemy.body.h - 80;
-    enemy.ball->body.x = game_data.enemyBallX;
-    enemy.ball->body.y = game_data.enemyBallY;
+    if (game_data.enemyBallFlag == 1) {
+        enemy.ball->body.x = game_data.enemyBallX;
+        enemy.ball->body.y = game_data.enemyBallY;
+    }
     enemy.score = game_data.enemyScore;
 #pragma endregion
 }
@@ -92,6 +99,9 @@ void MyGame::loadResources() {
     tankSurface     = IMG_Load("res/images/tank.png");
     bulletSurface   = IMG_Load("res/images/bullet.png");
     scoreFont       = TTF_OpenFont("res/fonts/UniversCondensed.ttf", 64);
+    bullet_hit_tank_sfx = Mix_LoadWAV("res/sfx/BULLET_HIT_TANK.wav");
+    bullet_hit_wall_sfx = Mix_LoadWAV("res/sfx/BULLET_HIT_WALL.wav");
+    player_fire_sfx     = Mix_LoadWAV("res/sfx/FIRE.wav");
 
     if (tankSurface != nullptr) {
         std::cout << "Loaded tank image successfully\n";
@@ -99,20 +109,44 @@ void MyGame::loadResources() {
     else {
         std::cout << "Could not load tank image\n";
     }
+
     if (bulletSurface != nullptr) {
         std::cout << "Loaded bullet image successfully\n";
     }
     else {
         std::cout << "Could not load bullet image\n";
     }
+
     if (scoreFont != nullptr) {
         std::cout << "Loaded font successfully\n";
     } 
     else {
         std::cout << "Could not load font\n";
     }
+
+    if (bullet_hit_tank_sfx != nullptr) {
+        std::cout << "Loaded WAV file successfully\n";
+    }
+    else {
+        std::cout << "Could not load WAV file\n";
+    }
+    
+    if (bullet_hit_wall_sfx != nullptr) {
+        std::cout << "Loaded WAV file successfully\n";
+    }
+    else {
+        std::cout << "Could not load WAV file\n";
+    }
+    
+    if (player_fire_sfx != nullptr) {
+        std::cout << "Loaded WAV file successfully\n";
+    }
+    else {
+        std::cout << "Could not load WAV file\n";
+    }
 }
 
+// deletes raw pointers used for resources during exit
 void MyGame::releaseResources() {
     delete tankSurface;
     delete bulletSurface;
@@ -125,25 +159,75 @@ void MyGame::releaseResources() {
     delete enemy_tank_texture;
     delete player_bullet_texture;
     delete enemy_bullet_texture;
+
+    Mix_FreeChunk(bullet_hit_tank_sfx);
+    Mix_FreeChunk(bullet_hit_wall_sfx);
+    Mix_FreeChunk(player_fire_sfx);
+
+    delete bullet_hit_tank_sfx;
+    delete bullet_hit_wall_sfx;
+    delete player_fire_sfx;
+}
+
+void MyGame::initSprites(SDL_Renderer* renderer) {
+    player_tank_texture = SDL_CreateTextureFromSurface(renderer, tankSurface);
+    enemy_tank_texture = SDL_CreateTextureFromSurface(renderer, tankSurface);
+    SDL_FreeSurface(tankSurface);
+
+    player_bullet_texture = SDL_CreateTextureFromSurface(renderer, bulletSurface);
+    enemy_bullet_texture = SDL_CreateTextureFromSurface(renderer, bulletSurface);
+    SDL_FreeSurface(bulletSurface);
+}
+
+void MyGame::playSound(Mix_Chunk* sound) {
+    if (sound != nullptr) {
+        Mix_PlayChannel(-1, sound, 0);
+    }
+    else {
+        std::cout << "Cannot play sound\n";
+    }
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
+#pragma region TANKS
     // Render SDL_Rects if textures cannot be loaded
     if (player_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &player.body);
     }
+    else {
+        SDL_RenderCopyEx(renderer, player_tank_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
+    }
+
     if (enemy_tank_texture == nullptr) {
         SDL_RenderDrawRect(renderer, &enemy.body);
     }
-    if (player_bullet_texture == nullptr) {
-        SDL_RenderDrawRect(renderer, &player.ball->body);
+    else {
+        SDL_RenderCopy(renderer, enemy_tank_texture, NULL, &enemy.body);
     }
-    if (enemy_bullet_texture == nullptr) {
-        SDL_RenderDrawRect(renderer, &enemy.ball->body);
-    }
+#pragma endregion
 
+#pragma region BULLETS
+    // balls render conditonally based on their respective flags
+    if(game_data.playerBallFlag == 1)
+        if (player_bullet_texture == nullptr) {
+            SDL_RenderDrawRect(renderer, &player.ball->body);
+        }
+        else {
+            SDL_RenderCopy(renderer, player_bullet_texture, NULL, &player.ball->body);
+        }
+    
+    if (game_data.enemyBallFlag == 1)
+        if (enemy_bullet_texture == nullptr) {
+            SDL_RenderDrawRect(renderer, &enemy.ball->body);
+        }
+        else {
+            SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
+        }
+#pragma endregion
+    
+#pragma region SCORE_TEXT
     player_score_surface = TTF_RenderText_Blended(
         scoreFont,
         std::to_string(game_data.playerScore).c_str(),
@@ -156,53 +240,72 @@ void MyGame::render(SDL_Renderer* renderer) {
         fontColor
     );
 
-    int player_score_width, player_score_height;
-    int enemy_score_width, enemy_score_height;
+    // TODO: Fix score texture memory leaks
+    if (player_score_surface == nullptr) {
+        std::cout << "Could not create surface from font\n";
+    }
+    else {
+        player_score_texture = SDL_CreateTextureFromSurface(renderer, player_score_surface);
+        SDL_FreeSurface(player_score_surface);
+    }
+    
+    if (enemy_score_surface == nullptr) {
+        std::cout << "Could not create surface from font\n";
+    }
+    else {
+        enemy_score_texture = SDL_CreateTextureFromSurface(renderer, enemy_score_surface);
+        SDL_FreeSurface(enemy_score_surface);
+    }
 
-    SDL_QueryTexture(
-        player_score_texture,
-        NULL,
-        NULL,
-        &player_score_width,
-        &player_score_height
-    );
+    if (player_score_texture == nullptr) {
 
-    SDL_QueryTexture(
-        enemy_score_texture,
-        NULL,
-        NULL,
-        &enemy_score_width,
-        &enemy_score_height
-    );
+        std::cout << "P1 SCORE: " << game_data.playerScore << std::endl;
+    }
+    else {
+        int player_score_width, player_score_height;
 
-    SDL_Rect player_score_dst = {
+        SDL_QueryTexture(
+            player_score_texture,
+            NULL,
+            NULL,
+            &player_score_width,
+            &player_score_height
+        );
+
+        SDL_Rect player_score_dst = {
         100,
         100,
         player_score_width,
         player_score_height
-    };
+        };
 
-    SDL_Rect enemy_score_dst = {
+        SDL_RenderCopy(renderer, player_score_texture, NULL, &player_score_dst);
+        SDL_DestroyTexture(player_score_texture);
+    }
+
+    if (enemy_score_texture == nullptr) {
+        std::cout << "P2 SCORE: " << game_data.enemyScore << std::endl;
+    }
+    else {
+        int enemy_score_width, enemy_score_height;
+
+        SDL_QueryTexture(
+            enemy_score_texture,
+            NULL,
+            NULL,
+            &enemy_score_width,
+            &enemy_score_height
+        );
+
+        SDL_Rect enemy_score_dst = {
         700,
         100,
         enemy_score_width,
         enemy_score_height
-    };
+        };
 
-    player_tank_texture     = SDL_CreateTextureFromSurface(renderer, tankSurface);
-    enemy_tank_texture      = SDL_CreateTextureFromSurface(renderer, tankSurface);
-    player_bullet_texture   = SDL_CreateTextureFromSurface(renderer, bulletSurface);
-    enemy_bullet_texture    = SDL_CreateTextureFromSurface(renderer, bulletSurface);
-    player_score_texture    = SDL_CreateTextureFromSurface(renderer, player_score_surface);
-    enemy_score_texture    = SDL_CreateTextureFromSurface(renderer, enemy_score_surface);
-
-    SDL_RenderCopyEx(renderer, player_tank_texture, NULL, &player.body, 0.f, new SDL_Point(), SDL_FLIP_VERTICAL);
-    SDL_RenderCopy(renderer, enemy_tank_texture, NULL, &enemy.body);
-    // balls render conditonally based on their respective flags
-    if (game_data.playerBallFlag == 1)
-        SDL_RenderCopy(renderer, player_bullet_texture, NULL, &player.ball->body);
-    if (game_data.enemyBallFlag == 1)
-        SDL_RenderCopy(renderer, enemy_bullet_texture, NULL, &enemy.ball->body);
-    SDL_RenderCopy(renderer, player_score_texture, NULL, &player_score_dst);
-    SDL_RenderCopy(renderer, enemy_score_texture, NULL, &enemy_score_dst);
+        SDL_RenderCopy(renderer, enemy_score_texture, NULL, &enemy_score_dst);
+        SDL_DestroyTexture(enemy_score_texture);
+    }
+#pragma endregion
 }

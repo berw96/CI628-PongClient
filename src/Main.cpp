@@ -90,27 +90,16 @@ void gameLoop(SDL_Renderer* renderer) {
         while (SDL_PollEvent(&event)) {
             if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0) {
                 game->input(event);
-
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        is_running = false;
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            if (event.type == SDL_QUIT) {
-                is_running = false;
             }
         }
 
         SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
         SDL_RenderClear(renderer);
 
+        // update
         game->update();
 
+        // render
         game->render(renderer);
 
         SDL_RenderPresent(renderer);
@@ -140,7 +129,7 @@ int run_game() {
     }
 
     game->loadResources();
-
+    game->initSprites(renderer);
     gameLoop(renderer);
 
     return 0;
@@ -156,14 +145,20 @@ int main(int argc, char** argv) {
 
     // Initialize SDL_ttf
     if (TTF_Init() < 0) {
-        printf("Could not init SDL_ttf.");
+        printf("TTF_Init: %s\n", TTF_GetError());
         exit(2);
+    }
+
+    // Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+        printf("Mix_OpenAudio: %s\n", Mix_GetError());
+        exit(3);
     }
 
     // Initialize SDL_net
     if (SDLNet_Init() == -1) {
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
-        exit(3);
+        exit(4);
     }
 
     IPaddress ip;
@@ -171,7 +166,7 @@ int main(int argc, char** argv) {
     // Resolve host (ip name + port) into an IPaddress type
     if (SDLNet_ResolveHost(&ip, IP_NAME, PORT) == -1) {
         printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-        exit(4);
+        exit(5);
     }
 
     // Open the connection to the server
@@ -179,7 +174,7 @@ int main(int argc, char** argv) {
 
     if (!socket) {
         printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-        exit(5);
+        exit(6);
     }
 
     SDL_CreateThread(on_receive, "ConnectionReceiveThread", (void*)socket);

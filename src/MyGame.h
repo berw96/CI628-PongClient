@@ -8,6 +8,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "SDL_mixer.h"
 #include "PlayerObject.h"
 
 // Data provided by the server
@@ -31,19 +32,23 @@ class MyGame {
         int texture_width = 100;
         int texture_height = 100;
 
-        SDL_Surface* tankSurface;
-        SDL_Surface* bulletSurface;
-        SDL_Surface* player_score_surface;
-        SDL_Surface* enemy_score_surface;
+        Mix_Chunk* bullet_hit_tank_sfx = nullptr;
+        Mix_Chunk* bullet_hit_wall_sfx = nullptr;
+        Mix_Chunk* player_fire_sfx = nullptr;
 
-        SDL_Texture* player_tank_texture;
-        SDL_Texture* enemy_tank_texture;
-        SDL_Texture* player_bullet_texture;
-        SDL_Texture* enemy_bullet_texture;
-        SDL_Texture* player_score_texture;
-        SDL_Texture* enemy_score_texture;
+        SDL_Surface* tankSurface = nullptr;
+        SDL_Surface* bulletSurface = nullptr;
+        SDL_Surface* player_score_surface = nullptr;
+        SDL_Surface* enemy_score_surface = nullptr;
 
-        TTF_Font* scoreFont;
+        SDL_Texture* player_tank_texture = nullptr;
+        SDL_Texture* enemy_tank_texture = nullptr;
+        SDL_Texture* player_bullet_texture = nullptr;
+        SDL_Texture* enemy_bullet_texture = nullptr;
+        SDL_Texture* player_score_texture = nullptr;
+        SDL_Texture* enemy_score_texture = nullptr;
+
+        TTF_Font* scoreFont = nullptr;
         SDL_Color fontColor = {255, 255, 255, 255};
 
     public:
@@ -55,7 +60,9 @@ class MyGame {
         void update();
         void render(SDL_Renderer* renderer);
         void loadResources();
+        void initSprites(SDL_Renderer* renderer);
         void releaseResources();
+        void playSound(Mix_Chunk* sound);
 };
 
 #endif
