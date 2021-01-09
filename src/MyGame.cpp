@@ -76,8 +76,6 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     else {
         std::cout << "Received: " << cmd << std::endl;
     }
-
-    
 }
 
 void MyGame::send(std::string message) {
