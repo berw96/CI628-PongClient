@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const char* IP_NAME = "localhost";
+const char* IP_NAME = "10.8.119.179";
 const Uint16 PORT = 55555;
 
 bool is_running = true;

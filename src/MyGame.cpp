@@ -43,9 +43,41 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
             game_data.enemyBallY = stoi(args.at(9));
             break;
         }
-    } else {
+    } 
+    else if (cmd == "BALL_HIT_BAT1" || cmd == "BALL_HIT_BAT2") {
+        std::cout << "Received: " << cmd << std::endl;
+        Mix_PlayChannel(-1, bullet_hit_tank_sfx, 0);
+    }
+    else if (
+        cmd == "HIT_WALL_DOWN"  ||
+        cmd == "HIT_WALL_UP"    ||
+        cmd == "HIT_WALL_LEFT"  ||
+        cmd == "HIT_WALL_RIGHT"
+        ) {
+        std::cout << "Received: " << cmd << std::endl;
+        Mix_PlayChannel(-1, bullet_hit_wall_sfx, 0);
+    }
+    else if (
+        (cmd == "BAT1_FIRED_BALL" && game_data.playerBallFlag == 0) || 
+        (cmd == "BAT2_FIRED_BALL" && game_data.enemyBallFlag == 0)) {
+        std::cout << "Received: " << cmd << std::endl;
+        Mix_PlayChannel(-1, player_fire_sfx, 0);
+    }
+    else if (cmd == "PLAYER1_QUIT") {
+        std::cout << "Received: " << cmd << std::endl;
+        SDL_Delay(200);
+        exit(0);
+    }
+    else if (cmd == "PLAYER2_QUIT") {
+        std::cout << "Received: " << cmd << std::endl;
+        SDL_Delay(200);
+        exit(0);
+    }
+    else {
         std::cout << "Received: " << cmd << std::endl;
     }
+
+    
 }
 
 void MyGame::send(std::string message) {
@@ -66,9 +98,7 @@ void MyGame::input(SDL_Event& event) {
         break;
     case SDLK_ESCAPE:
         send("QUIT");
-        // delay by a few milliseconds to enable the server to receive the message before exiting
-        SDL_Delay(200);
-        exit(0);
+        break;
     }
 #pragma endregion
 }
