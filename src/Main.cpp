@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const char* IP_NAME = "10.8.119.179";
+const char* IP_NAME = "localhost";
 const Uint16 PORT = 55555;
 
 bool is_running = true;
@@ -129,7 +129,7 @@ int run_game() {
     }
 
     game->loadResources();
-    game->initSprites(renderer);
+    game->initSpriteTextures(renderer);
     gameLoop(renderer);
 
     return 0;

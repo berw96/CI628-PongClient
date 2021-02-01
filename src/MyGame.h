@@ -13,56 +13,63 @@
 
 // Data provided by the server
 static struct GameData {
-    int playerX = 0;
-    int enemyX = 0;
-    int playerScore = 0;
-    int enemyScore = 0;
-    int playerBallX = 0;
-    int playerBallY = 0;
-    int enemyBallX = 0;
-    int enemyBallY = 0;
-    int playerBallFlag = 0;
-    int enemyBallFlag = 0;
+    int playerX         = 0;
+    int enemyX          = 0;
+    int playerScore     = 0;
+    int enemyScore      = 0;
+    int playerBallX     = 0;
+    int playerBallY     = 0;
+    int enemyBallX      = 0;
+    int enemyBallY      = 0;
+    int playerBallFlag  = 0;
+    int enemyBallFlag   = 0;
 } game_data;
 
 class MyGame {
-    private:
-        Player player = Player();
-        Player enemy = Player();
-        int texture_width = 100;
-        int texture_height = 100;
+   
+private:
+    int texture_width   = 100;
+    int texture_height  = 100;
 
-        Mix_Chunk* bullet_hit_tank_sfx = nullptr;
-        Mix_Chunk* bullet_hit_wall_sfx = nullptr;
-        Mix_Chunk* player_fire_sfx = nullptr;
+    Player player                       = Player();
+    Player enemy                        = Player();
 
-        SDL_Surface* tankSurface = nullptr;
-        SDL_Surface* bulletSurface = nullptr;
-        SDL_Surface* player_score_surface = nullptr;
-        SDL_Surface* enemy_score_surface = nullptr;
+    Mix_Chunk* bullet_hit_tank_sfx      = nullptr;
+    Mix_Chunk* bullet_hit_wall_sfx      = nullptr;
+    Mix_Chunk* player_fire_sfx          = nullptr;
 
-        SDL_Texture* player_tank_texture = nullptr;
-        SDL_Texture* enemy_tank_texture = nullptr;
-        SDL_Texture* player_bullet_texture = nullptr;
-        SDL_Texture* enemy_bullet_texture = nullptr;
-        SDL_Texture* player_score_texture = nullptr;
-        SDL_Texture* enemy_score_texture = nullptr;
+    SDL_Surface* tankSurface            = nullptr;
+    SDL_Surface* bulletSurface          = nullptr;
+    SDL_Surface* player_score_surface   = nullptr;
+    SDL_Surface* enemy_score_surface    = nullptr;
 
-        TTF_Font* scoreFont = nullptr;
-        SDL_Color fontColor = {255, 255, 255, 255};
+    SDL_Texture* player_tank_texture    = nullptr;
+    SDL_Texture* enemy_tank_texture     = nullptr;
+    SDL_Texture* player_bullet_texture  = nullptr;
+    SDL_Texture* enemy_bullet_texture   = nullptr;
+    SDL_Texture* player_score_texture   = nullptr;
+    SDL_Texture* enemy_score_texture    = nullptr;
 
-    public:
-        std::vector<std::string> messages;
+    TTF_Font* scoreFont                 = nullptr;
 
-        void on_receive(std::string message, std::vector<std::string>& args);
-        void send(std::string message);
-        void input(SDL_Event& event);
-        void update();
-        void render(SDL_Renderer* renderer);
-        void loadResources();
-        void initSprites(SDL_Renderer* renderer);
-        void releaseResources();
-        void playSound(Mix_Chunk* sound);
+public:
+    std::vector<std::string> messages;
+
+    void on_receive(std::string message, std::vector<std::string>& args);
+    void send(std::string message);
+    void input(SDL_Event& event);
+    void update();
+    void render(SDL_Renderer* renderer);
+    void renderTanks(SDL_Renderer* renderer);
+    void renderBullets(SDL_Renderer* renderer);
+    void renderText(SDL_Renderer* renderer);
+
+    void loadResources();
+    void initSpriteTextures(SDL_Renderer* renderer);
+    void initTextSurfaces();
+    void releaseResources();
+
+    void playSound(Mix_Chunk* sound);
 };
 
 #endif

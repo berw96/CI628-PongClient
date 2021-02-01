@@ -1,5 +1,5 @@
-#ifndef _PLAYER_OBJECT_
-#define _PLAYER_OBJECT_
+#ifndef _PLAYER_OBJECT_H_
+#define _PLAYER_OBJECT_H_
 
 #include "SDL.h"
 class BallObject;
