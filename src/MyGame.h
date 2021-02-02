@@ -38,8 +38,10 @@ private:
     Mix_Chunk* bullet_hit_wall_sfx      = nullptr;
     Mix_Chunk* player_fire_sfx          = nullptr;
 
-    SDL_Surface* tankSurface            = nullptr;
-    SDL_Surface* bulletSurface          = nullptr;
+    SDL_Surface* player_tank_surface    = nullptr;
+    SDL_Surface* enemy_tank_surface     = nullptr;
+    SDL_Surface* player_bullet_surface  = nullptr;
+    SDL_Surface* enemy_bullet_surface   = nullptr;
     SDL_Surface* player_score_surface   = nullptr;
     SDL_Surface* enemy_score_surface    = nullptr;
 
@@ -50,7 +52,7 @@ private:
     SDL_Texture* player_score_texture   = nullptr;
     SDL_Texture* enemy_score_texture    = nullptr;
 
-    TTF_Font* scoreFont                 = nullptr;
+    TTF_Font* score_font                = nullptr;
 
 public:
     std::vector<std::string> messages;
