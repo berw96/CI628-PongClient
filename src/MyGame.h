@@ -26,8 +26,9 @@ static struct GameData {
 } game_data;
 
 class MyGame {
-   
+    
 private:
+    int connectionNumber = 0;
     int texture_width   = 100;
     int texture_height  = 100;
 

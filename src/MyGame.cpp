@@ -63,6 +63,14 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
         std::cout << "Received: " << cmd << std::endl;
         Mix_PlayChannel(-1, player_fire_sfx, 0);
     }
+    else if (cmd == "PLAYER1_CONNECT") {
+        std::cout << "Received: " << cmd << std::endl;
+        this->connectionNumber = 1;
+    }
+    else if (cmd == "PLAYER2_CONNECT") {
+        std::cout << "Received: " << cmd << std::endl;
+        this->connectionNumber = 2;
+    }
     else if (cmd == "PLAYER1_QUIT") {
         std::cout << "Received: " << cmd << std::endl;
         SDL_Delay(200);
@@ -83,22 +91,41 @@ void MyGame::send(std::string message) {
 }
 
 void MyGame::input(SDL_Event& event) {
-    switch (event.key.keysym.sym) {
-#pragma region PLAYER_CONTROL
-    case SDLK_a:
-        send(event.type == SDL_KEYDOWN ? "A_DOWN" : "A_UP");
+    switch (this->connectionNumber) {
+    case 1:
+        switch (event.key.keysym.sym) {
+        case SDLK_a:
+            send(event.type == SDL_KEYDOWN ? "A_PLAYERDOWN" : "A_PLAYERUP");
+            break;
+        case SDLK_d:
+            send(event.type == SDL_KEYDOWN ? "D_PLAYERDOWN" : "D_PLAYERUP");
+            break;
+        case SDLK_w:
+            send(event.type == SDL_KEYDOWN ? "W_PLAYERDOWN" : "W_PLAYERUP");
+            break;
+        case SDLK_ESCAPE:
+            send("PLAYERQUIT");
+            break;
+        }
         break;
-    case SDLK_d:
-        send(event.type == SDL_KEYDOWN ? "D_DOWN" : "D_UP");
-        break;
-    case SDLK_w:
-        send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
-        break;
-    case SDLK_ESCAPE:
-        send("QUIT");
+    case 2:
+        switch (event.key.keysym.sym) {
+        case SDLK_a:
+            send(event.type == SDL_KEYDOWN ? "A_ENEMYDOWN" : "A_ENEMYUP");
+            break;
+        case SDLK_d:
+            send(event.type == SDL_KEYDOWN ? "D_ENEMYDOWN" : "D_ENEMYUP");
+            break;
+        case SDLK_w:
+            send(event.type == SDL_KEYDOWN ? "W_ENEMYDOWN" : "W_ENEMYUP");
+            break;
+        case SDLK_ESCAPE:
+            send("ENEMYQUIT");
+            break;
+        }
         break;
     }
-#pragma endregion
+    
 }
 
 void MyGame::update() {
